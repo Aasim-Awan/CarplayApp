@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "393312164034",
+    "project_id": "carplay-b725e",
+    "storage_bucket": "carplay-b725e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:393312164034:android:702a4d6fa1708c9784435b",
+        "android_client_info": {
+          "package_name": "com.example.carplaytesty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvWlIiLut9IYG0E-TqA451065Tes50yD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

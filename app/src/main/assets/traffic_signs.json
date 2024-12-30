@@ -1,0 +1,509 @@
+[
+  {
+    "id": 1,
+    "name": "Stop Sign",
+    "image": "trafficsigns/stop.png",
+    "description": "A red, octagonal sign instructing vehicles to stop.",
+    "purpose": "Ensure safety at intersections.",
+    "instructions": "Stop completely behind stop lines or crosswalks.",
+    "penalties": "Failure to stop may result in penalties.",
+    "relatedSigns": [
+      "Yield Sign",
+      "All-Way Stop"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Yield Sign",
+    "image": "trafficsigns/yield.png",
+    "description": "A triangular sign instructing drivers to yield.",
+    "purpose": "Near intersections and merging zones.",
+    "instructions": "Yield to oncoming traffic and pedestrians.",
+    "penalties": "Violating this sign results in accidents.",
+    "relatedSigns": [
+      "Stop Sign",
+      "Roundabout Sign"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Speed Limit Sign",
+    "image": "trafficsigns/speed.png",
+    "description": "Indicates the speed limit on the road.",
+    "purpose": "Maintain safe speed according to road signs.",
+    "instructions": "Do not exceed the speed indicated on the sign.",
+    "penalties": "Penalties include fines and license suspension.",
+    "relatedSigns": [
+      "School Zone Sign",
+      "Minimum Speed Sign"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "No Parking Sign",
+    "image": "trafficsigns/noparking.png",
+    "description": "Indicates areas where parking is prohibited.",
+    "purpose": "Prevent traffic congestion and improve road flow.",
+    "instructions": "Parking restricted based on time and location.",
+    "penalties": "Violating this sign may result in fines and towing.",
+    "relatedSigns": [
+      "No Stopping Sign",
+      "Loading Zone Sign"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "No Entry Sign",
+    "image": "trafficsigns/noentry.png",
+    "description": "Indicates restricted entry areas for vehicles.",
+    "purpose": "Commonly placed at restricted entry points.",
+    "instructions": "Driving through these areas can result in penalties.",
+    "penalties": "Follow road signs for proper vehicle movement.",
+    "relatedSigns": [
+      "No U-Turn Sign",
+      "Prohibitory Sign"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Pedestrian Crossing Sign",
+    "image": "trafficsigns/crossing.png",
+    "description": "Warns drivers of an upcoming crosswalk.",
+    "purpose": "Near school zones and pedestrian crossings.",
+    "instructions": "Drivers must reduce speed and yield to pedestrians.",
+    "penalties": "Failing to stop may result in penalties.",
+    "relatedSigns": [
+      "School Zone Sign",
+      "Yield Sign"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "School Crossing Sign",
+    "image": "trafficsigns/schoolzone.png",
+    "description": "Warns drivers of school crossings ahead.",
+    "purpose": "Placed near schools, bus stops, and crosswalks.",
+    "instructions": "Drivers must stop to allow children to cross safely.",
+    "penalties": "Failing to stop could result in severe penalties.",
+    "relatedSigns": [
+      "Pedestrian Crossing Sign",
+      "No Parking Sign"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Bicycle Crossing Sign",
+    "image": "trafficsigns/bicyclecrossingsign.png",
+    "description": "Indicates areas where bicycles cross the road.",
+    "purpose": "Near bike lanes and crossings.",
+    "instructions": "Drivers should yield to bicycles crossing the street.",
+    "penalties": "Disregarding this sign can result in accidents.",
+    "relatedSigns": [
+      "Pedestrian Crossing Sign",
+      "School Zone Sign"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "One-Way Sign",
+    "image": "trafficsigns/oneway.png",
+    "description": "Indicates roads with one-way traffic only.",
+    "purpose": "Placed on narrow streets and main roads.",
+    "instructions": "Drivers must follow the direction of traffic flow.",
+    "penalties": "Going against this sign results in accidents.",
+    "relatedSigns": [
+      "No U-Turn Sign",
+      "Speed Limit Sign"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "U-Turn Prohibited Sign",
+    "image": "trafficsigns/nouturn.png",
+    "description": "Indicates that U-turns are prohibited.",
+    "purpose": "Commonly seen at intersections and curves.",
+    "instructions": "U-turns should not be attempted in restricted areas.",
+    "penalties": "Non-compliance could result in traffic violations.",
+    "relatedSigns": [
+      "No Passing Sign",
+      "Merge Sign"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Construction Zone Sign",
+    "image": "trafficsigns/constructionahead.png",
+    "description": "Indicates areas with ongoing road construction.",
+    "purpose": "Commonly placed near construction sites.",
+    "instructions": "Slow down and observe all road construction instructions.",
+    "penalties": "Disregarding this sign can result in accidents.",
+    "relatedSigns": [
+      "Speed Limit Sign",
+      "Merge Sign"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Slow Down Sign",
+    "image": "trafficsigns/slowdown.png",
+    "description": "Advises vehicles to reduce speed.",
+    "purpose": "Commonly placed near intersections, schools, and curves.",
+    "instructions": "Reduce speed to ensure safety for pedestrians and vehicles.",
+    "penalties": "Disregarding this sign can result in collisions.",
+    "relatedSigns": [
+      "Yield Sign",
+      "Speed Limit Sign"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "No Right Turn Sign",
+    "image": "trafficsigns/noright.png",
+    "description": "Indicates that right turns are prohibited.",
+    "purpose": "Placed near intersections or roads where right turns are restricted.",
+    "instructions": "Drivers must not turn right at the indicated area.",
+    "penalties": "Failing to comply may result in fines or accidents.",
+    "relatedSigns": [
+      "No Left Turn Sign",
+      "U-Turn Prohibited Sign"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "No Left Turn Sign",
+    "image": "trafficsigns/noleft.png",
+    "description": "Indicates that left turns are prohibited.",
+    "purpose": "Commonly seen at intersections or roads with restricted left turns.",
+    "instructions": "Drivers must not turn left at the indicated area.",
+    "penalties": "Violating this sign may result in penalties or accidents.",
+    "relatedSigns": [
+      "No Right Turn Sign",
+      "One-Way Sign"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "No Overtaking Sign",
+    "image": "trafficsigns/noovertaking.png",
+    "description": "Indicates that overtaking is not allowed on this road.",
+    "purpose": "Placed on roads with narrow lanes, sharp turns, or limited visibility.",
+    "instructions": "Drivers must not overtake other vehicles where this sign is displayed.",
+    "penalties": "Violating this sign increases the risk of accidents and penalties.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Speed Limit Sign"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Warning Sign",
+    "image": "trafficsigns/warningsign.png",
+    "description": "Alerts drivers to potential hazards ahead.",
+    "purpose": "Placed near dangerous curves, steep slopes, or accident-prone areas.",
+    "instructions": "Drivers must reduce speed and proceed with caution.",
+    "penalties": "Ignoring this sign increases the risk of accidents.",
+    "relatedSigns": [
+      "Sharp Curve Sign",
+      "Slippery Road Sign"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Railroad Sign",
+    "image": "trafficsigns/railroadcrossing.png",
+    "description": "Indicates a railroad crossing ahead.",
+    "purpose": "Placed near train tracks to alert drivers and pedestrians.",
+    "instructions": "Drivers must stop and look for approaching trains before proceeding.",
+    "penalties": "Failure to stop can result in collisions with trains.",
+    "relatedSigns": [
+      "Stop Sign",
+      "Warning Sign"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Animal Crossing Sign",
+    "image": "trafficsigns/animalcrossing.png",
+    "description": "Warns drivers about the potential presence of animals crossing the road.",
+    "purpose": "Placed near forests, farms, or wildlife crossing areas.",
+    "instructions": "Drivers must slow down and be vigilant for animals on the road.",
+    "penalties": "Failing to comply may result in harm to wildlife or accidents.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Road Crossing Sign"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Slippery Road Sign",
+    "image": "trafficsigns/slipperyroad.png",
+    "description": "Warns drivers of slippery road conditions.",
+    "purpose": "Commonly placed near bridges, curves, or areas prone to wet or icy conditions.",
+    "instructions": "Drivers should reduce speed and avoid sudden braking or sharp turns.",
+    "penalties": "Ignoring this sign may lead to skidding or loss of control.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Sharp Curve Sign"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Steep Hill Road Sign",
+    "image": "trafficsigns/steephill.png",
+    "description": "Indicates a steep incline or decline ahead.",
+    "purpose": "Typically placed on roads with sharp elevation changes.",
+    "instructions": "Drivers should adjust their speed and use appropriate gears.",
+    "penalties": "Failing to prepare may result in brake failure or accidents.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Slow Down Sign"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Sharp Curve Sign",
+    "image": "trafficsigns/sharpcurve.png",
+    "description": "Warns drivers of a sharp curve ahead.",
+    "purpose": "Placed before sharp turns to ensure drivers reduce speed.",
+    "instructions": "Drivers should approach the curve with caution and maintain control.",
+    "penalties": "Ignoring this sign increases the risk of rollover or skidding.",
+    "relatedSigns": [
+      "Slippery Road Sign",
+      "Warning Sign"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Falling Rocks Sign",
+    "image": "trafficsigns/fallingrocks.png",
+    "description": "Warns drivers of areas prone to falling rocks or debris.",
+    "purpose": "Commonly placed near cliffs, mountainous roads, or unstable terrains.",
+    "instructions": "Drivers should proceed with caution and avoid stopping unnecessarily.",
+    "penalties": "Failure to heed this sign may result in damage or injury.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Steep Hill Road Sign"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Road Narrows Ahead Sign",
+    "image": "trafficsigns/narrowroad.png",
+    "description": "Indicates that the road ahead narrows.",
+    "purpose": "Placed before sections where lanes reduce or the road becomes narrower.",
+    "instructions": "Drivers must slow down and yield when necessary.",
+    "penalties": "Failing to comply may cause collisions in tight spaces.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Slow Down Sign"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Bicycles Crossing Sign",
+    "image": "trafficsigns/bicyclecrossing.png",
+    "description": "Alerts drivers to areas where bicycles may cross the road.",
+    "purpose": "Typically placed near bike paths or shared roadways.",
+    "instructions": "Drivers must yield to bicycles and exercise caution.",
+    "penalties": "Failure to follow this sign may endanger cyclists.",
+    "relatedSigns": [
+      "Pedestrian Crossing Sign",
+      "Warning Sign"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Guide and Information Sign",
+    "image": "trafficsigns/guideandinformationsign.png",
+    "description": "Provides guidance and general information for drivers.",
+    "purpose": "Found near intersections, tourist areas, or highways.",
+    "instructions": "Drivers should use the information to navigate or plan routes.",
+    "penalties": "Ignoring this sign may lead to missed exits or confusion.",
+    "relatedSigns": [
+      "Exit Sign",
+      "One Way Sign"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Exit Sign",
+    "image": "trafficsigns/exitsign.png",
+    "description": "Indicates the location of an exit from a roadway.",
+    "placement": "Typically placed on highways or major roads.",
+    "instructions": "Drivers should prepare to exit safely and reduce speed as required.",
+    "consequences": "Failing to comply may result in missing the exit or accidents.",
+    "relatedSigns": [
+      "Guide and Information Sign",
+      "Slow Down Sign"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Rest Area Sign",
+    "image": "trafficsigns/restareasign.png",
+    "description": "Indicates the presence of a rest area ahead.",
+    "placement": "Found on highways and long-distance routes.",
+    "instructions": "Drivers can use this area to rest, use facilities, or refuel.",
+    "consequences": "Ignoring this sign might lead to driver fatigue, which increases accident risk.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Service Sign"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Hospital Sign",
+    "image": "trafficsigns/hospitalsign.png",
+    "description": "Indicates the location of a nearby hospital.",
+    "placement": "Placed near hospitals or medical facilities.",
+    "instructions": "Drivers should reduce noise (e.g., no honking) and drive cautiously.",
+    "consequences": "Failing to comply might disrupt medical services or emergency care.",
+    "relatedSigns": [
+      "Service Sign",
+      "Information Sign"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Fuel Station Sign",
+    "image": "trafficsigns/fuelstation.png",
+    "description": "Indicates the location of the nearest fuel station.",
+    "placement": "Found along highways or near fuel stations.",
+    "instructions": "Drivers should plan refueling accordingly.",
+    "consequences": "Ignoring this sign may result in running out of fuel.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Service Sign"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Parking Area Sign",
+    "image": "trafficsigns/parkingsign.png",
+    "description": "Indicates the availability of a designated parking area.",
+    "placement": "Found in urban areas, tourist spots, or highway stops.",
+    "instructions": "Drivers can park their vehicles in the marked area.",
+    "consequences": "Parking elsewhere might result in fines or towing.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Service Sign"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Distance Marker Sign",
+    "image": "trafficsigns/mile.png",
+    "description": "Indicates the distance to nearby cities or landmarks.",
+    "placement": "Found along highways or major roads.",
+    "instructions": "Drivers can use this information for navigation and trip planning.",
+    "consequences": "Ignoring this sign might cause confusion about travel distances.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Information Sign"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "City Limit Sign",
+    "image": "trafficsigns/citylimitsign.png",
+    "description": "Marks the beginning or end of a city's boundary.",
+    "placement": "Placed at city entrances or exits.",
+    "instructions": "Drivers should adjust their speed and follow city-specific rules.",
+    "consequences": "Failure to comply may result in speeding violations or fines.",
+    "relatedSigns": [
+      "Information Sign",
+      "Warning Sign"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Airport Sign",
+    "image": "trafficsigns/airpotsign.png",
+    "description": "Indicates the direction or location of an airport.",
+    "placement": "Placed near airports or highways leading to them.",
+    "instructions": "Drivers can follow this sign for airport access.",
+    "consequences": "Missing this sign may result in delays or route confusion.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Information Sign"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Detour Sign",
+    "image": "trafficsigns/detoursign.png",
+    "description": "Indicates an alternate route due to road closures or construction.",
+    "placement": "Placed near road work zones or diversions.",
+    "instructions": "Drivers must follow the detour route indicated.",
+    "consequences": "Ignoring this sign may lead to dead ends or traffic violations.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Road Work Sign"
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Highway Sign",
+    "image": "trafficsigns/highwaynumbersign.png",
+    "description": "Indicates the number or name of a highway.",
+    "placement": "Found at highway entrances and exits.",
+    "instructions": "Drivers can use this sign for navigation and trip planning.",
+    "consequences": "Missing this sign might result in taking the wrong route.",
+    "relatedSigns": [
+      "Guide Sign",
+      "Information Sign"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Temporary Construction Sign",
+    "image": "trafficsigns/constructionahead.png",
+    "description": "Warns of temporary construction or maintenance ahead.",
+    "placement": "Placed in work zones or areas under repair.",
+    "instructions": "Drivers should reduce speed and follow instructions.",
+    "consequences": "Ignoring this sign may result in accidents or fines.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Road Work Sign"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Road Work Ahead Sign",
+    "image": "trafficsigns/roadwork.png",
+    "description": "Warns drivers of upcoming road work or construction zones.",
+    "placement": "Placed in advance of construction areas.",
+    "instructions": "Drivers should reduce speed and exercise caution.",
+    "consequences": "Failure to comply might lead to accidents or traffic penalties.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Road Work Sign"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Lane End Sign",
+    "image": "trafficsigns/laneendahead.png",
+    "description": "Indicates that a lane is ending ahead.",
+    "placement": "Placed before sections where a lane merges or ends.",
+    "instructions": "Drivers must merge safely into the adjacent lane.",
+    "consequences": "Ignoring this sign might result in collisions or traffic violations.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Lane Merge Sign"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Under Construction Sign",
+    "image": "trafficsigns/UnderConstruction.png",
+    "description": "Warns drivers of an area currently under construction.",
+    "placement": "Placed near construction zones or road maintenance areas.",
+    "instructions": "Drivers should slow down, follow instructions, and be prepared for potential detours.",
+    "consequences": "Ignoring this sign may result in accidents, fines, or delays due to unsafe driving near the construction zone.",
+    "relatedSigns": [
+      "Warning Sign",
+      "Road Work Sign"
+    ]
+  }
+]

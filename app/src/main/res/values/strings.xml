@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">CarPlayTest</string>
+    <string name="speed_format">%1$.1f km/h</string>
+    <string name="speed_limit_set">Speed Limit: %1$.1f km/h</string>
+    <string name="speed_alert">You have exceeded the speed limit!</string>
+
+
+    <string-array name="Cities">
+        <item>Islamabad</item>
+        <item>Karachi</item>
+        <item>Lahore</item>
+        <item>Peshawar</item>
+        <item>Rawalpindi</item>
+        <item>Quetta</item>
+        <item>Faisalabad</item>
+        <item>Sialkot</item>
+        <item>Multan</item>
+        <item>Gujranwala</item>
+        <item>Bahawalpur</item>
+        <item>Sukkur</item>
+        <item>Hyderabad</item>
+        <item>Murree</item>
+        <item>Gilgit</item>
+        <item>Skardu</item>
+        <item>Azad Kashmir</item>
+        <item>Swat</item>
+        <item>Islamabad</item>
+        <item>Wah Cantt</item>
+        <item>Chiniot</item>
+        <item>Turbat</item>
+        <item>Abbottabad</item>
+        <item>Jhelum</item>
+        <item>Karachi</item>
+        <item>Okara</item>
+        <item>Mardan</item>
+    </string-array>
+
+    <string-array name="Car_Maintenances">
+        <item>Tire change</item>
+        <item>Oil with filter</item>
+        <item>Engine Block</item>
+        <item>Timing chain</item>
+        <item>Spark plug</item>
+        <item>Radiator</item>
+        <item>Transmission (Automatic/Manual)</item>
+        <item>Clutch</item>
+        <item>Drive hats</item>
+        <item>Brake discs</item>
+        <item>Brake pads</item>
+        <item>Break Calipers</item>
+        <item>Shock Absorbers</item>
+        <item>Struts</item>
+        <item>Control Arms</item>
+        <item>Steering Rack</item>
+        <item>Power Steering Pump</item>
+        <item>Cooling System</item>
+        <item>Water Pump</item>
+        <item>Fuel Pump</item>
+        <item>Fuel Filter</item>
+        <item>Alternator</item>
+        <item>Starter Motor</item>
+        <item>Catalytic Converter</item>
+        <item>Wheel Bearings</item>
+        <item>Car Wash</item>
+    </string-array>
+
+
+    <string name="Email_api">mlsn.c026a8fd0429e201de04dc01406590239042cfa57c69387b35ca4686bc5d9f8e</string>
+    <string name="Weather_api">2529d2449a484da08de90610241411</string>
+    <string name="Weather_base_url">http://api.weatherapi.com/v1/</string>
+</resources>
