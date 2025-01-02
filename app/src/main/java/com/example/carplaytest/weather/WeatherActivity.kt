@@ -2,7 +2,6 @@ package com.example.carplaytest.weather
 
 import android.Manifest
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
@@ -10,13 +9,12 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
-import com.example.carplaytest.R
 import com.example.carplaytest.databinding.ActivityWeatherBinding
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -35,7 +33,7 @@ class WeatherActivity : AppCompatActivity() {
     private val apiKey = "2529d2449a484da08de90610241411"
     private val baseUrl = "http://api.weatherapi.com/v1/"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sessionManager: SessionManager
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
     private val LOCATION_SETTINGS_REQUEST_CODE = 1001
 
@@ -52,11 +50,12 @@ class WeatherActivity : AppCompatActivity() {
         binding = ActivityWeatherBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        sharedPreferences = getSharedPreferences("WeatherPrefs", MODE_PRIVATE)
+        sessionManager = SessionManager(this)
+        refreshHandler.removeCallbacks(refreshRunnable)
 
-        val cities = resources.getStringArray(R.array.Cities)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, cities)
-        binding.etCityName.setAdapter(adapter)
+//        val cities = resources.getStringArray(R.array.Cities)
+//        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, cities)
+//        binding.etCityName.setAdapter(adapter)
 
         binding.etCityName.setThreshold(1)
 
@@ -68,10 +67,10 @@ class WeatherActivity : AppCompatActivity() {
             requestLocationPermissions()
         }
 
-        val lastUpdateTime = sharedPreferences.getLong("LastUpdateTime", 0)
+        val lastUpdateTime = sessionManager.getLong("LastUpdateTime", 0)
         val oneMintInMillis = 60 * 1000
         if (System.currentTimeMillis() - lastUpdateTime < oneMintInMillis) {
-            val cachedData = sharedPreferences.getString("WeatherData", null)
+            val cachedData = sessionManager.getString("WeatherData", null)
             cachedData?.let {
                 val cachedWeatherResponse = Gson().fromJson(it, WeatherResponse::class.java)
                 updateUI(cachedWeatherResponse)
@@ -92,7 +91,9 @@ class WeatherActivity : AppCompatActivity() {
                 }
             }
         }
+
         binding.tvUpdateTime.visibility = View.GONE
+
         binding.backArrow.setOnClickListener {
             finish()
         }
@@ -152,8 +153,8 @@ class WeatherActivity : AppCompatActivity() {
     }
 
     private fun showCachedDataOrError() {
-        val cachedData = sharedPreferences.getString("WeatherData", null)
-        val lastUpdated = sharedPreferences.getString("LastUpdated", "N/A")
+        val cachedData = sessionManager.getString("WeatherData", null)
+        val lastUpdated = sessionManager.getString("LastUpdated", "N/A")
         if (cachedData != null) {
             val cachedWeatherResponse = Gson().fromJson(cachedData, WeatherResponse::class.java)
             updateUI(cachedWeatherResponse)
@@ -168,14 +169,12 @@ class WeatherActivity : AppCompatActivity() {
     }
 
     private fun cacheWeatherData(weatherResponse: WeatherResponse) {
-        val editor = sharedPreferences.edit()
-        editor.putString("WeatherData", Gson().toJson(weatherResponse))
-        editor.putString(
+        sessionManager.saveString("WeatherData", Gson().toJson(weatherResponse))
+        sessionManager.saveString(
             "LastUpdated",
             weatherResponse.current.last_updated
-        ) // Save last updated time
-        editor.putLong("LastUpdateTime", System.currentTimeMillis())
-        editor.apply()
+        )
+        sessionManager.saveLong("LastUpdateTime", System.currentTimeMillis())
     }
 
     private fun checkLocationPermissions(): Boolean {
@@ -268,9 +267,11 @@ class WeatherActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        updateUI(it)
-                        cacheWeatherData(it)
-                        binding.progressBar.visibility = View.GONE
+                        if (!isDestroyed) {
+                            updateUI(it)
+                            cacheWeatherData(it)
+                            binding.progressBar.visibility = View.GONE
+                        }
                     }
                 } else {
                     Log.e("WeatherError", "Response code: ${response.code()}")
@@ -284,9 +285,11 @@ class WeatherActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<WeatherResponse>, t: Throwable) {
                 Log.e("WeatherError", "Network error: ${t.message}", t)
-                Toast.makeText(
-                    this@WeatherActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT
-                ).show()
+                if (!isDestroyed) {
+                    Toast.makeText(
+                        this@WeatherActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
                 binding.progressBar.visibility = View.GONE
             }
         })

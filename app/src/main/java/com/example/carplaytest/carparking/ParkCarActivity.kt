@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.carplaytest.databinding.ActivityParkCarBinding
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +32,7 @@ class ParkCarActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +41,7 @@ class ParkCarActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initMapView(savedInstanceState)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        sessionManager = SessionManager(this)
 
         setupListeners()
         requestLocationPermissions()
@@ -62,22 +65,22 @@ class ParkCarActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun requestLocationPermissions() {
         Dexter.withContext(this).withPermissions(
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    if (report?.areAllPermissionsGranted() == true) {
-                        checkLocationServicesEnabled()
-                    } else {
-                        showToast("Location permissions are required to use this feature.")
-                    }
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+        ).withListener(object : MultiplePermissionsListener {
+            override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                if (report?.areAllPermissionsGranted() == true) {
+                    checkLocationServicesEnabled()
+                } else {
+                    showToast("Location permissions are required to use this feature.")
                 }
+            }
 
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?, token: PermissionToken?
-                ) {
-                    token?.continuePermissionRequest()
-                }
-            }).check()
+            override fun onPermissionRationaleShouldBeShown(
+                permissions: MutableList<PermissionRequest>?, token: PermissionToken?
+            ) {
+                token?.continuePermissionRequest()
+            }
+        }).check()
     }
 
     private fun checkLocationServicesEnabled() {
@@ -143,9 +146,8 @@ class ParkCarActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun saveCarLocation(latitude: Double, longitude: Double) {
-        val sharedPrefs = getSharedPreferences("CarParking", MODE_PRIVATE)
-        sharedPrefs.edit().putString("latitude", latitude.toString())
-            .putString("longitude", longitude.toString()).apply()
+        sessionManager.saveString("latitude", latitude.toString())
+        sessionManager.saveString("longitude", longitude.toString())
 
         showToast("Car parking location saved!")
     }
@@ -158,6 +160,20 @@ class ParkCarActivity : AppCompatActivity(), OnMapReadyCallback {
                     MarkerOptions().position(currentLatLng).title("Your Current Location")
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+
+                googleMap.setOnMarkerClickListener { clickedMarker ->
+                    googleMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            clickedMarker.position,
+                            15f
+                        )
+                    )
+
+                    clickedMarker.title?.let { title ->
+                        Toast.makeText(this, "Marker clicked: $title", Toast.LENGTH_SHORT).show()
+                    }
+                    true
+                }
             } ?: showToast("Unable to fetch location")
         }
     }

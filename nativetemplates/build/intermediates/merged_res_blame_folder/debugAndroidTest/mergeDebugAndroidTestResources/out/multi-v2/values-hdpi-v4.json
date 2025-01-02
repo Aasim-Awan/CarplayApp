@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.google.android.ads.nativetemplates.test.nativetemplates-mergeDebugAndroidTestResources-11:/values-hdpi-v4/values-hdpi-v4.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-4\\13d6ee89108d8871b864e6df63008731\\transformed\\appcompat-1.2.0\\res\\values-hdpi-v4\\values-hdpi-v4.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "6",
+                        "endColumns": "13",
+                        "endOffsets": "327"
+                    }
+                }
+            ]
+        }
+    ]
+}

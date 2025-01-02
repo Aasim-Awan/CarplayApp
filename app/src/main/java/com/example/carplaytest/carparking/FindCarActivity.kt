@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.location.Location
 import android.location.LocationManager
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import com.example.carplaytest.R
 import com.example.carplaytest.databinding.ActivityFindCarBinding
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,6 +37,7 @@ class FindCarActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +45,7 @@ class FindCarActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        sessionManager = SessionManager(this)
 
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
@@ -131,6 +133,21 @@ class FindCarActivity : AppCompatActivity(), OnMapReadyCallback {
                         .title("Your Current Location")
                 )
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+
+                googleMap.setOnMarkerClickListener { clickedMarker ->
+                    googleMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            clickedMarker.position,
+                            15f
+                        )
+                    )
+
+                    clickedMarker.title?.let { title ->
+                        Toast.makeText(this, "Marker clicked: $title", Toast.LENGTH_SHORT).show()
+                    }
+                    true
+                }
+
             } else {
                 Toast.makeText(this, "Unable to fetch location", Toast.LENGTH_SHORT).show()
             }
@@ -140,9 +157,8 @@ class FindCarActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showCarParkingLocation() {
-        val sharedPrefs = getSharedPreferences("CarParking", MODE_PRIVATE)
-        val latitude = sharedPrefs.getString("latitude", null)?.toDoubleOrNull()
-        val longitude = sharedPrefs.getString("longitude", null)?.toDoubleOrNull()
+        val latitude = sessionManager.getString("latitude", null)?.toDoubleOrNull()
+        val longitude = sessionManager.getString("longitude", null)?.toDoubleOrNull()
 
         if (latitude != null && longitude != null) {
             val carLatLng = LatLng(latitude, longitude)
@@ -177,7 +193,8 @@ class FindCarActivity : AppCompatActivity(), OnMapReadyCallback {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(carLatLng, 15f))
                 Toast.makeText(this, "Car parking location displayed.", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Google Map is not initialized yet.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Google Map is not initialized yet.", Toast.LENGTH_SHORT)
+                    .show()
             }
         } else {
             Toast.makeText(this, "No car parking location saved.", Toast.LENGTH_SHORT).show()

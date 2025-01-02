@@ -4,67 +4,111 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@color/white"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
-    app:cardUseCompatPadding="true"
-    android:background="?android:attr/selectableItemBackground">
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Location Name -->
+        <!-- Start Time -->
         <TextView
-            android:id="@+id/locationNameTextView"
-            android:layout_width="0dp"
+            android:id="@+id/startTimeLabel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Location Name: Unknown"
-            android:textStyle="bold"
-            android:textSize="18sp"
+            android:text="Start Time:"
             android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Central Park, NY" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Latitude -->
         <TextView
-            android:id="@+id/latitudeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Latitude:"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/locationNameTextView"
-            app:layout_constraintVertical_chainStyle="spread_inside"
-            tools:text="Latitude: 40.785091" />
-
-        <!-- Longitude -->
-        <TextView
-            android:id="@+id/longitudeTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Longitude:"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/latitudeTextView"
-            tools:text="Longitude: -73.968285" />
-
-        <!-- Timestamp -->
-        <TextView
-            android:id="@+id/timestampTextView"
+            android:id="@+id/startTimeTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Timestamp: "
+            android:layout_marginStart="8dp"
+            android:text="00:00:00"
+            android:textColor="@color/gray"
             android:textSize="14sp"
-            android:textColor="@color/gray_dark"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/longitudeTextView"
-            tools:text="Timestamp: 2024-12-30 14:15:00" />
+            app:layout_constraintStart_toEndOf="@id/startTimeLabel"
+            app:layout_constraintTop_toTopOf="@id/startTimeLabel" />
+
+        <!-- End Time -->
+        <TextView
+            android:id="@+id/endTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="End Time:"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startTimeTextView" />
+
+        <TextView
+            android:id="@+id/endTimeTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="00:00:00"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/endTimeLabel"
+            app:layout_constraintTop_toTopOf="@id/endTimeLabel" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/endTimeTextView">
+            <!-- Created Date -->
+            <TextView
+                android:id="@+id/createdDateLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Date:"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@id/createdDateTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/createdDateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="01/01/2024"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/createdDateLabel"
+                app:layout_constraintTop_toTopOf="@id/createdDateLabel" />
+
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary"
+                android:padding="8dp"
+                android:text="Delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Delete" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

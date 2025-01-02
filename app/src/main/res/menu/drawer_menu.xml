@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_privacy_policy"
+        android:icon="@drawable/ic_privacy_policy"
+        android:title="Privacy Policy" />
+    <item
+        android:id="@+id/nav_rate_us"
+        android:icon="@drawable/ic_rate_us"
+        android:title="Rate Us" />
+    <item
+        android:id="@+id/nav_share_app"
+        android:icon="@drawable/ic_share"
+
+        android:title="Share App" />
+    <item
+        android:id="@+id/nav_more_apps"
+        android:icon="@drawable/ic_more_apps"
+        android:title="More Apps" />
+    <item
+        android:id="@+id/nav_close"
+        android:icon="@drawable/ic_close"
+        android:title="Close" />
+    <item
+        android:id="@+id/nav_Exit"
+        android:icon="@drawable/ic_logout"
+        android:title="Exit App" />
+</menu>

@@ -1,0 +1,102 @@
+<!-- res/layout/exit_dialog.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialogRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+        <!-- Title -->
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Dialog Title"
+            android:textColor="@color/text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Close Icon -->
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_close"
+            app:tint="@color/primary" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.5dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/primary" />
+
+    <ImageView
+        android:id="@+id/iconImage"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher" />
+
+
+    <!-- Message -->
+    <TextView
+        android:id="@+id/txtMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:text="This is the dialog message."
+        android:textColor="@color/text"
+        android:textSize="16sp" />
+
+    <!-- Ad Container -->
+    <FrameLayout
+        android:id="@+id/flAdCont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rlAdsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+    </FrameLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:text="OK"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</LinearLayout>

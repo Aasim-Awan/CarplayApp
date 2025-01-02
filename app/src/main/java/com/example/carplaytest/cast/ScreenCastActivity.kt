@@ -27,10 +27,22 @@ class ScreenCastActivity : AppCompatActivity() {
         }
     }
 
+    private fun stopCasting() {
+        val mediaRouter = MediaRouter.getInstance(this)
+        val selectedRoute = mediaRouter.selectedRoute
+
+        if (selectedRoute != null && selectedRoute.isSelected) {
+            mediaRouter.selectRoute(mediaRouter.defaultRoute)
+            Log.d("ScreenCastActivity", "Casting has been stopped.")
+        } else {
+            Log.d("ScreenCastActivity", "No active casting session to stop.")
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (navigatingToSettings) {
-            finish() // Finish the activity when returning from settings
+            finish()
         }
     }
 
@@ -74,7 +86,11 @@ class ScreenCastActivity : AppCompatActivity() {
         builder.setTitle("Casting Connected")
         builder.setMessage("Your device is currently casting to another device. Would you like to manage the casting settings?")
         builder.setPositiveButton("Go to Settings") { _, _ -> openCastSettings() }
-        builder.setNegativeButton("Cancel") { _, _ -> finish() }
+        builder.setNegativeButton("stop") { _, _ ->
+            stopCasting()
+            finish()
+        }
+        builder.setNeutralButton("Cancel") { _, _ -> finish() }
         builder.create().show()
     }
 

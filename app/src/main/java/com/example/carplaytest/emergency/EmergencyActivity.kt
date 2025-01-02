@@ -1,6 +1,5 @@
 package com.example.carplaytest.emergency
 
-import SharedPreferencesHelper
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -17,7 +16,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.carplaytest.databinding.ActivityEmergencyBinding
-import com.example.carplaytest.sevice.CarPlayService
+import com.example.carplaytest.service.CarPlayService
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -26,11 +26,12 @@ class EmergencyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEmergencyBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var isTracingStarted = false
+    private lateinit var sessionManager: SessionManager
 
     companion object {
         private const val TAG = "EmergencyActivity"
         private const val PERMISSIONS_REQUEST_CODE = 1
-        const val CRASH_THRESHOLD = 10.0
+        const val CRASH_THRESHOLD = 20.0
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
@@ -38,13 +39,16 @@ class EmergencyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEmergencyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sessionManager = SessionManager(this)
+
         checkPermissions()
         initializeComponents()
         manageInitialState()
     }
 
     private fun manageInitialState() {
-        val emails = SharedPreferencesHelper.getEmails(this)
+        val emails = sessionManager.getEmails()
         Log.d(TAG, "onCreate: $emails")
 
         if (isUserDetailsComplete()) {
@@ -80,14 +84,14 @@ class EmergencyActivity : AppCompatActivity() {
         binding.backArrow.setOnClickListener { finish() }
         binding.btnStopService.setOnClickListener { stopService() }
         binding.btnDelete.setOnClickListener {
-            SharedPreferencesHelper.clearEmails(this)
+            sessionManager.clearEmails()
             manageInitialState()
         }
         binding.btnSaveDetails.setOnClickListener { saveUserDetails() }
     }
 
     private fun isUserDetailsComplete(): Boolean {
-        val emails = SharedPreferencesHelper.getEmails(this)
+        val emails = sessionManager.getEmails()
         return !emails.first.isNullOrEmpty() && !emails.second.isNullOrEmpty()
     }
 
@@ -105,9 +109,9 @@ class EmergencyActivity : AppCompatActivity() {
                 if (newEmail.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail)
                         .matches()
                 ) {
-                    val emails = SharedPreferencesHelper.getEmails(this@EmergencyActivity)
-                    SharedPreferencesHelper.saveEmails(
-                        this@EmergencyActivity, emails.first!!, emails.second!!, newEmail
+                    val emails = sessionManager.getEmails()
+                    sessionManager.saveEmails(
+                        emails.first!!, emails.second!!, newEmail
                     )
                     Toast.makeText(this@EmergencyActivity, "Email updated!", Toast.LENGTH_SHORT)
                         .show()
@@ -135,13 +139,13 @@ class EmergencyActivity : AppCompatActivity() {
             return
         }
 
-        SharedPreferencesHelper.saveEmails(this, name, senderEmail, receiverEmail)
+        sessionManager.saveEmails(name, senderEmail, receiverEmail)
         Toast.makeText(this, "Details saved successfully.", Toast.LENGTH_SHORT).show()
         manageInitialState()
     }
 
     private fun showUserDetailForm() {
-        val emails = SharedPreferencesHelper.getEmails(this)
+        val emails = sessionManager.getEmails()
         binding.UserName.text = "Name: \n     ${emails.first}"
         binding.SenderEmail.text = "Email:\n     ${emails.second}"
         binding.ReceiverEmail.text = "Emergency Email: \n      ${emails.third}"
@@ -182,10 +186,20 @@ class EmergencyActivity : AppCompatActivity() {
 
         if (isUserDetailsComplete()) {
             if (!isServiceRunning(CarPlayService::class.java)) {
-                val intent = Intent(this, CarPlayService::class.java).apply {
-                    putExtra("action", "CRASH_DETECTION")
-                }
+                val intent = Intent(this, CarPlayService::class.java)
                 startService(intent)
+                sessionManager.saveBoolean(
+                    SessionManager.SessionKeys.IS_LOCATION_TRACKING_ENABLED,
+                    false
+                )
+                sessionManager.saveBoolean(
+                    SessionManager.SessionKeys.IS_CRASH_MONITORING_ENABLED,
+                    true
+                )
+                sessionManager.saveBoolean(
+                    SessionManager.SessionKeys.IS_SPEED_TRACKING_ENABLED,
+                    true
+                )
                 Log.d(TAG, "Crash Detection Service Started")
                 isTracingStarted = true
             }
@@ -206,6 +220,10 @@ class EmergencyActivity : AppCompatActivity() {
         if (isServiceRunning(CarPlayService::class.java)) {
             val intent = Intent(this, CarPlayService::class.java)
             stopService(intent)
+            sessionManager.saveBoolean(
+                SessionManager.SessionKeys.IS_CRASH_MONITORING_ENABLED,
+                false
+            )
             Log.d(TAG, "Crash Detection Service Stopped")
             isTracingStarted = false
         }

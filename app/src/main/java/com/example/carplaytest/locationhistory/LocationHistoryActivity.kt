@@ -1,10 +1,9 @@
 package com.example.carplaytest.locationhistory
 
 import android.Manifest
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -18,16 +17,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import com.example.carplaytest.R
 import com.example.carplaytest.carmaintenance.database.CarPlayDB
 import com.example.carplaytest.databinding.ActivityLocationHistoryBinding
 import com.example.carplaytest.locationhistory.database.LocationDao
 import com.example.carplaytest.locationhistory.database.LocationEntity
 import com.example.carplaytest.locationhistory.database.LocationLog
 import com.example.carplaytest.locationhistory.database.LocationLogDao
-import com.example.carplaytest.sevice.CarPlayService
+import com.example.carplaytest.service.CarPlayService
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -41,6 +40,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -55,6 +55,8 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private lateinit var appDatabase: CarPlayDB
+    private lateinit var sessionManager: SessionManager
 
     private val locationManager by lazy { getSystemService(LOCATION_SERVICE) as LocationManager }
 
@@ -75,29 +77,61 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityLocationHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val appDatabase = Room.databaseBuilder(
+        sessionManager = SessionManager(this)
+        appDatabase = Room.databaseBuilder(
             applicationContext, CarPlayDB::class.java, "app-database"
         ).build()
+
         locationDao = appDatabase.locationDao()
         locationLogDao = appDatabase.locationLogDao()
         mapView = binding.mapView
-
-        binding.stopLocationButton.isEnabled = false
-        binding.stopLocationButton.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         binding.mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        binding.locationRecyclerView.layoutManager = GridLayoutManager(this, 2)
+        binding.locationRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+
+        lifecycleScope.launch {
+            if (locationDao.getAllLocations().isNotEmpty()) {
+                binding.showAllLocationsButton.visibility = View.VISIBLE
+            } else {
+                binding.noHistoryTextView.visibility = View.VISIBLE
+            }
+
+            if (locationDao.getAllLocations().isNotEmpty() && locationDao.getAllLocations()
+                    .lastOrNull()?.endTime == null
+            ) {
+                Log.d(
+                    "LocationHistoryActivity",
+                    "Tracking in progress ${locationDao.getAllLocations().lastOrNull()?.endTime}"
+                )
+                binding.stopLocationButton.visibility = View.VISIBLE
+                binding.trackLocationButton.visibility = View.GONE
+            } else {
+                binding.stopLocationButton.visibility = View.GONE
+                binding.trackLocationButton.visibility = View.VISIBLE
+            }
+        }
 
         binding.trackLocationButton.setOnClickListener {
             startTracking()
+            binding.stopLocationButton.visibility = View.VISIBLE
+            binding.trackLocationButton.visibility = View.GONE
+            binding.locationRecyclerView.visibility = View.VISIBLE
+            binding.noHistoryTextView.visibility = View.GONE
+            binding.showAllLocationsButton.visibility = View.VISIBLE
+            binding.deleteHistoryButton.visibility = View.VISIBLE
             Log.d("LocationHistoryActivity", "Start button clicked")
         }
 
         binding.stopLocationButton.setOnClickListener {
             stopTracking()
+            updateDisplayedLocations()
+            binding.stopLocationButton.visibility = View.GONE
+            binding.trackLocationButton.visibility = View.VISIBLE
             Log.d("LocationHistoryActivity", "Stop button clicked")
         }
 
@@ -109,8 +143,8 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.showAllLocationsButton.setOnClickListener {
             showAllLocationsOnMap()
+            updateDisplayedLocations()
         }
-
 
         binding.backArrow.setOnClickListener { finish() }
 
@@ -124,7 +158,6 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         updateDisplayedLocations()
-
         setupLocationRequest()
     }
 
@@ -156,6 +189,10 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
         ) {
             googleMap.isMyLocationEnabled = true
             moveToCurrentLocation()
+            googleMap.setOnMyLocationButtonClickListener {
+                moveToCurrentLocation()
+                true
+            }
         } else {
             Toast.makeText(this, "Location permission is not granted.", Toast.LENGTH_SHORT).show()
         }
@@ -168,9 +205,25 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
 
                 googleMap.addMarker(
-                    MarkerOptions().position(currentLatLng).title("You are here")
+                    MarkerOptions().position(currentLatLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 )
+
+                googleMap.setOnMarkerClickListener { clickedMarker ->
+                    googleMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            clickedMarker.position,
+                            15f
+                        )
+                    )
+
+                    clickedMarker.title?.let { title ->
+                        Toast.makeText(this, "Marker clicked: $title", Toast.LENGTH_SHORT).show()
+                    }
+                    true
+                }
+
+
             } else {
                 Toast.makeText(this, "Unable to fetch current location.", Toast.LENGTH_SHORT).show()
             }
@@ -185,69 +238,64 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
 
         googleMap.addMarker(
-            MarkerOptions().position(currentLatLng).title("You are here")
+            MarkerOptions().position(currentLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
         )
     }
 
     private fun startTracking() {
-        if (isServiceRunning()) {
-            Toast.makeText(this, "Tracking is already running.", Toast.LENGTH_SHORT).show()
-            return
+        Log.d("CarPlayService2", "Starting tracking")
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val locationEntity = LocationEntity(
+                id = 0,
+                startTime = System.currentTimeMillis(),
+                endTime = null,
+                createdDate = System.currentTimeMillis()
+            )
+
+            val sessionId = locationDao.insertLocation(locationEntity)
+            sessionManager.saveLong("activeLocationEntityId", sessionId)
+            Log.d("CarPlayService2", "Started tracking with sessionId: $sessionId")
         }
 
-        val serviceIntent = Intent(this, CarPlayService::class.java).apply {
-            putExtra("action", "LOCATION_TRACKING")
-        }
+        val serviceIntent = Intent(this, CarPlayService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
         Log.d("LocationHistoryActivity", "Service started")
-
-        startLocationUpdates()
-        updateUIForTracking(true)
-    }
-
-    private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+        sessionManager.saveBoolean(SessionManager.SessionKeys.IS_LOCATION_TRACKING_ENABLED, true)
+        sessionManager.saveBoolean(SessionManager.SessionKeys.IS_CRASH_MONITORING_ENABLED, true)
+        sessionManager.saveBoolean(SessionManager.SessionKeys.IS_SPEED_TRACKING_ENABLED, true)
     }
 
     private fun stopTracking() {
-        if (!isServiceRunning()) {
-            Toast.makeText(this, "Tracking is not currently running.", Toast.LENGTH_SHORT).show()
-            return
+        val sessionId = sessionManager.getLong("activeLocationEntityId", -1)
+        if (sessionId != -1L) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val locationEntity = locationDao.getLocationById(sessionId)
+
+                if (locationEntity != null) {
+                    locationEntity.endTime = System.currentTimeMillis()
+                    locationDao.updateLocation(locationEntity)
+                    sessionManager.removeKey("activeLocationEntityId")
+                    sessionManager.clear()
+                }
+            }
+        } else {
+            lifecycleScope.launch(Dispatchers.Main) {
+                Log.d("LocationHistoryActivity", "No active tracking session found")
+            }
         }
 
         val serviceIntent = Intent(this, CarPlayService::class.java)
         stopService(serviceIntent)
         Log.d("LocationHistoryActivity", "Service stopped")
 
+        sessionManager.saveBoolean(SessionManager.SessionKeys.IS_LOCATION_TRACKING_ENABLED, false)
         stopLocationUpdates()
-        updateUIForTracking(false)
     }
 
     private fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-
-    private fun updateUIForTracking(isTracking: Boolean) {
-        if (isTracking) {
-            binding.stopLocationButton.isEnabled = true
-            binding.stopLocationButton.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.primary)
-            )
-            binding.trackLocationButton.isEnabled = false
-            binding.trackLocationButton.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.gray)
-            )
-        } else {
-            binding.stopLocationButton.isEnabled = false
-            binding.stopLocationButton.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.gray)
-            )
-            binding.trackLocationButton.isEnabled = true
-            binding.trackLocationButton.setBackgroundColor(
-                ContextCompat.getColor(this, R.color.primary)
-            )
-        }
     }
 
     private fun clearAllLocations() {
@@ -256,9 +304,7 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
             locationLogDao.clearLocationLogs()
             withContext(Dispatchers.Main) {
                 Toast.makeText(
-                    this@LocationHistoryActivity,
-                    "All locations cleared.",
-                    Toast.LENGTH_SHORT
+                    this@LocationHistoryActivity, "All locations cleared.", Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -278,74 +324,76 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
                     ).show()
                 }.show()
         } else {
-            Toast.makeText(this, "Location is enabled. You can start tracking.", Toast.LENGTH_SHORT)
-                .show()
+            Log.d("LocationHistoryActivity", "Location is enabled.")
         }
     }
 
     private fun updateDisplayedLocations() {
         lifecycleScope.launch {
-            val locations = withContext(Dispatchers.IO) { locationLogDao.getAllLocationsLogs() }
+            val locations = withContext(Dispatchers.IO) { locationDao.getAllLocations() }
             displayLocations(locations)
         }
     }
 
     private fun showAllLocationsOnMap() {
         lifecycleScope.launch {
-            // Get all location logs from the database
             val locations = withContext(Dispatchers.IO) { locationLogDao.getAllLocationsLogs() }
 
             if (locations.isNotEmpty()) {
-                googleMap.clear()  // Clear existing markers
+                googleMap.clear()
 
-                // Add a marker for each location
                 locations.forEach { location ->
                     val latLng = LatLng(location.latitude, location.longitude)
                     googleMap.addMarker(
                         MarkerOptions().position(latLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                            .title("Saved Location")
+
                     )
                 }
 
-                // Move the camera to show all the markers
                 val boundsBuilder = LatLngBounds.Builder()
                 locations.forEach { location ->
                     val latLng = LatLng(location.latitude, location.longitude)
                     boundsBuilder.include(latLng)
                 }
                 val bounds = boundsBuilder.build()
-                val padding = 100 // padding around the map
+                val padding = 100
                 val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
                 googleMap.animateCamera(cameraUpdate)
             } else {
                 Toast.makeText(
-                    this@LocationHistoryActivity,
-                    "No saved locations found.",
-                    Toast.LENGTH_SHORT
+                    this@LocationHistoryActivity, "No saved locations found.", Toast.LENGTH_SHORT
                 ).show()
             }
         }
     }
 
-    private fun displayLocations(locations: List<LocationLog>) {
+    private fun displayLocations(locations: List<LocationEntity>) {
         if (locations.isNotEmpty()) {
             googleMap.clear()
 
-            val markers = locations.map { LatLng(it.latitude, it.longitude) }
-            markers.forEach { latLng ->
-                googleMap.addMarker(
-                    MarkerOptions().position(latLng)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                )
+//            locations.forEach { location ->
+//                val latLng = LatLng(location.latitude, location.longitude)
+//                googleMap.addMarker(
+//                    MarkerOptions().position(latLng)
+//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+//                )
+//            }
+//
+//            val lastLocation = LatLng(locations.last().latitude, locations.last().longitude)
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, 15f))
+
+            binding.locationRecyclerView.apply {
+                adapter = LocationHistoryAdapter(this@LocationHistoryActivity,
+                    locations.toMutableList(),
+                    onEntitySelected = { selectedEntity ->
+                        handleLocationClick(selectedEntity)
+                    },
+                    onEntityDeleted = { deletedEntity ->
+                        deleteLocation(deletedEntity)
+                    })
             }
 
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markers.last(), 15f))
-
-            binding.locationRecyclerView.adapter = LocationHistoryAdapter(
-                this@LocationHistoryActivity,
-                locations
-            )
             binding.noHistoryTextView.visibility = View.GONE
         } else {
             binding.locationRecyclerView.visibility = View.GONE
@@ -353,29 +401,66 @@ class LocationHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun isServiceRunning(): Boolean {
-        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val runningServices = activityManager.getRunningServices(Int.MAX_VALUE)
-        for (service in runningServices) {
-            if (CarPlayService::class.java.name == service.service.className) {
-                return true
+    private fun handleLocationClick(selectedEntity: LocationEntity) {
+        lifecycleScope.launch {
+            try {
+                val relatedLocationLogs = withContext(Dispatchers.IO) {
+                    appDatabase.locationLogDao().getLocationLogsByLocationId(selectedEntity.id)
+                }
+
+                if (relatedLocationLogs.isNotEmpty()) {
+                    drawPathOnMap(relatedLocationLogs)
+                    //    displayLocationLogs(relatedLocationLogs) =
+                } else {
+                    Toast.makeText(
+                        this@LocationHistoryActivity,
+                        "No logs found for this location",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(
+                    this@LocationHistoryActivity, "Error fetching location logs", Toast.LENGTH_SHORT
+                ).show()
             }
         }
-        return false
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (isServiceRunning()) {
-            updateUIForTracking(true)
-        } else {
-            updateUIForTracking(false)
+    private fun drawPathOnMap(locations: List<LocationLog>) {
+        googleMap.clear()
+
+        if (locations.isEmpty()) return
+
+        val firstLocation = LatLng(locations.first().latitude, locations.first().longitude)
+        googleMap.addMarker(
+            MarkerOptions().position(firstLocation)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+             .title("Start")
+        )
+
+        val lastLocation = LatLng(locations.last().latitude, locations.last().longitude)
+        googleMap.addMarker(
+            MarkerOptions().position(lastLocation)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+             .title("End")
+        )
+
+        val polylineOptions = PolylineOptions().color(Color.BLUE).width(5f)
+
+        locations.forEach { location ->
+            polylineOptions.add(LatLng(location.latitude, location.longitude))
         }
+
+        googleMap.addPolyline(polylineOptions)
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 15f))
     }
 
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
+    private fun deleteLocation(locationEntity: LocationEntity) {
+        lifecycleScope.launch {
+            locationDao.deleteLocation(locationEntity)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

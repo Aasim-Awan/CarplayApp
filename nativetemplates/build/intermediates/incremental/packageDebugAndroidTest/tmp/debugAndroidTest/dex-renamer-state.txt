@@ -1,0 +1,4 @@
+#Thu Jan 02 16:24:04 PKT 2025
+base.0=D\:\\Android projects\\CarPlayTest\\nativetemplates\\build\\intermediates\\dex\\debugAndroidTest\\mergeDexDebugAndroidTest\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

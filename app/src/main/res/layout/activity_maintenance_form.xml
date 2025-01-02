@@ -42,7 +42,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/body"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topBar">
 
         <!-- ScrollView -->
@@ -238,30 +239,20 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:background="@color/white" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/primary"
+                    android:text="Save" />
+
             </LinearLayout>
+
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:backgroundTint="@color/primary"
-            android:text="Save" />
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

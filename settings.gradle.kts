@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CarPlayTest"
 include(":app")
+include(":nativetemplates")

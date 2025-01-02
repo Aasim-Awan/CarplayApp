@@ -1,7 +1,6 @@
 package com.example.carplaytest.speedtracker
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -17,18 +16,27 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.carplaytest.R
 import com.example.carplaytest.databinding.ActivitySpeedTrackerBinding
-import com.example.carplaytest.sevice.CarPlayService
+import com.example.carplaytest.service.CarPlayService
+import com.example.carplaytest.utils.SessionManager
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.SettingsClient
 
 class SpeedTrackerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySpeedTrackerBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private lateinit var sessionManager: SessionManager
     private var speedLimit: Float = 0f
     private var alarmPlayer: MediaPlayer? = null
     private lateinit var settingsClient: SettingsClient
+    private var isServiceRunning = false
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 1001
@@ -40,6 +48,7 @@ class SpeedTrackerActivity : AppCompatActivity() {
         binding = ActivitySpeedTrackerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        sessionManager = SessionManager(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         settingsClient = LocationServices.getSettingsClient(this)
 
@@ -47,7 +56,6 @@ class SpeedTrackerActivity : AppCompatActivity() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.lastLocation
                 location?.let {
-                    Log.d("SpeedTrackerActivity", "Location update: Latitude: ${it.latitude}, Longitude: ${it.longitude}, Speed: ${it.speed}")
                     updateSpeed(it)
                 }
             }
@@ -58,9 +66,11 @@ class SpeedTrackerActivity : AppCompatActivity() {
 
         binding.btnSetLimit.setOnClickListener {
             val limit = binding.etSpeedLimit.text.toString()
-            if (limit.isNotEmpty()) {
+            if (limit.isNotEmpty() && limit.toFloatOrNull() != null) {
                 speedLimit = limit.toFloat()
-                saveSpeedLimit(speedLimit)
+                Log.d("SpeedTrackerActivity", "Speed limit set to: $speedLimit")
+                sessionManager.saveFloat("SAVED_SPEED_LIMIT", speedLimit)
+                Log.d("SpeedTrackerActivity", "Speed limit saved: $speedLimit")
                 binding.etSpeedLimit.clearFocus()
                 binding.tvSpeedLimit.text = getString(R.string.speed_limit_set, speedLimit)
                 Log.d("SpeedTrackerActivity", "Speed limit set to: $speedLimit")
@@ -71,6 +81,9 @@ class SpeedTrackerActivity : AppCompatActivity() {
         }
 
         binding.btnStopAlarm.setOnClickListener {
+            Log.d("SpeedTrackerActivity", "Stop Alarm button clicked")
+            sessionManager.saveBoolean(SessionManager.SessionKeys.IS_SPEED_TRACKING_ENABLED, false)
+            Log.d("CarPlayService", "Stopping location updates")
             stopTracking()
         }
 
@@ -81,23 +94,8 @@ class SpeedTrackerActivity : AppCompatActivity() {
         checkLocationPermission()
     }
 
-    private fun saveSpeedLimit(speedLimit: Float) {
-        val sharedPreferences = getSharedPreferences("SpeedPrefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putFloat("SAVED_SPEED_LIMIT", speedLimit)
-        editor.apply()
-        Log.d("SpeedTrackerActivity", "Speed limit saved: $speedLimit")
-    }
-
-    private fun getSavedSpeedLimit(): Float {
-        val sharedPreferences = getSharedPreferences("SpeedPrefs", Context.MODE_PRIVATE)
-        val savedLimit = sharedPreferences.getFloat("SAVED_SPEED_LIMIT", 0f)
-        Log.d("SpeedTrackerActivity", "Loaded saved speed limit: $savedLimit")
-        return savedLimit
-    }
-
     private fun loadSavedSpeedLimit() {
-        speedLimit = getSavedSpeedLimit()
+        speedLimit = sessionManager.getFloat("SAVED_SPEED_LIMIT", 0f)
         binding.tvSpeedLimit.text = getString(R.string.speed_limit_set, speedLimit)
         Log.d("SpeedTrackerActivity", "Speed limit loaded: $speedLimit")
     }
@@ -179,65 +177,35 @@ class SpeedTrackerActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-        Log.d("SpeedTrackerActivity", "Stopped location updates.")
-    }
-
     private fun updateSpeed(location: Location) {
-        val speed = location.speed * 3.6f // Convert from m/s to km/h
+        val speed = location.speed * 3.6f
         Log.d("SpeedTrackerActivity", "Current speed: $speed km/h")
         binding.tvSpeed.text = getString(R.string.speed_format, speed)
 
-        if (speed > speedLimit) {
-            Log.d("SpeedTrackerActivity", "Speed exceeded limit: $speed km/h > $speedLimit km/h")
-            startAlarm()
-        } else {
-            stopAlarm()
-        }
-    }
-
-    private fun startAlarm() {
-        if (alarmPlayer == null) {
-            alarmPlayer = MediaPlayer.create(this, R.raw.alert)
-            alarmPlayer?.isLooping = true
-            alarmPlayer?.start()
-            Log.d("SpeedTrackerActivity", "Alarm started")
-        }
-    }
-
-    private fun stopAlarm() {
-        alarmPlayer?.let {
-            if (it.isPlaying) {
-                it.stop()
-                it.release()
-                alarmPlayer = null
-                Log.d("SpeedTrackerActivity", "Alarm stopped")
-            }
-        }
+        Log.d("SpeedTrackerActivity", "Speed limit: $speedLimit")
     }
 
     private fun startTracking() {
-        val intent = Intent(this, CarPlayService::class.java).apply {
-            putExtra("action", "SPEED_TRACKING")
-            putExtra("SPEED_LIMIT_EXTRA", speedLimit)
+        if (!isServiceRunning) {
+            val intent = Intent(this, CarPlayService::class.java)
+            ContextCompat.startForegroundService(this, intent)
+            sessionManager.saveBoolean(
+                SessionManager.SessionKeys.IS_LOCATION_TRACKING_ENABLED, false
+            )
+            sessionManager.saveBoolean(SessionManager.SessionKeys.IS_CRASH_MONITORING_ENABLED, true)
+            sessionManager.saveBoolean(SessionManager.SessionKeys.IS_SPEED_TRACKING_ENABLED, true)
+            isServiceRunning = true
+            startLocationUpdates()
+            Toast.makeText(this, "Tracking with speed limit $speedLimit", Toast.LENGTH_SHORT).show()
         }
-        ContextCompat.startForegroundService(this, intent)
-        startLocationUpdates()
-        Toast.makeText(this, "Tracking with speed limit $speedLimit", Toast.LENGTH_SHORT).show()
     }
 
     private fun stopTracking() {
-        stopService(Intent(this, CarPlayService::class.java))
-        stopLocationUpdates()
-        stopAlarm()
-        Log.d("SpeedTrackerActivity", "Speed Tracking Stopped")
-        Toast.makeText(this, "Speed Tracking Stopped", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopLocationUpdates()
-        stopAlarm()
+        val intent = Intent(this, CarPlayService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 }

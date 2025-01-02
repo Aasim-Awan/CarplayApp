@@ -3,37 +3,44 @@
     <string name="speed_format">%1$.1f km/h</string>
     <string name="speed_limit_set">Speed Limit: %1$.1f km/h</string>
     <string name="speed_alert">You have exceeded the speed limit!</string>
+    <string name="Done">Done</string>
+    <string name="Cancel">Cancel</string>
+
+    <string name="developer_account_link">3DevTech</string>
+    <string name="privacy_settings">Privacy settings</string>
+    <string name="policy_url">https://sites.google.com/view/3devtechprivacypolicy</string>"
 
 
-    <string-array name="Cities">
-        <item>Islamabad</item>
-        <item>Karachi</item>
-        <item>Lahore</item>
-        <item>Peshawar</item>
-        <item>Rawalpindi</item>
-        <item>Quetta</item>
-        <item>Faisalabad</item>
-        <item>Sialkot</item>
-        <item>Multan</item>
-        <item>Gujranwala</item>
-        <item>Bahawalpur</item>
-        <item>Sukkur</item>
-        <item>Hyderabad</item>
-        <item>Murree</item>
-        <item>Gilgit</item>
-        <item>Skardu</item>
-        <item>Azad Kashmir</item>
-        <item>Swat</item>
-        <item>Islamabad</item>
-        <item>Wah Cantt</item>
-        <item>Chiniot</item>
-        <item>Turbat</item>
-        <item>Abbottabad</item>
-        <item>Jhelum</item>
-        <item>Karachi</item>
-        <item>Okara</item>
-        <item>Mardan</item>
-    </string-array>
+
+<!--    <string-array name="Cities">-->
+<!--        <item>Islamabad</item>-->
+<!--        <item>Karachi</item>-->
+<!--        <item>Lahore</item>-->
+<!--        <item>Peshawar</item>-->
+<!--        <item>Rawalpindi</item>-->
+<!--        <item>Quetta</item>-->
+<!--        <item>Faisalabad</item>-->
+<!--        <item>Sialkot</item>-->
+<!--        <item>Multan</item>-->
+<!--        <item>Gujranwala</item>-->
+<!--        <item>Bahawalpur</item>-->
+<!--        <item>Sukkur</item>-->
+<!--        <item>Hyderabad</item>-->
+<!--        <item>Murree</item>-->
+<!--        <item>Gilgit</item>-->
+<!--        <item>Skardu</item>-->
+<!--        <item>Azad Kashmir</item>-->
+<!--        <item>Swat</item>-->
+<!--        <item>Islamabad</item>-->
+<!--        <item>Wah Cantt</item>-->
+<!--        <item>Chiniot</item>-->
+<!--        <item>Turbat</item>-->
+<!--        <item>Abbottabad</item>-->
+<!--        <item>Jhelum</item>-->
+<!--        <item>Karachi</item>-->
+<!--        <item>Okara</item>-->
+<!--        <item>Mardan</item>-->
+<!--    </string-array>-->
 
     <string-array name="Car_Maintenances">
         <item>Tire change</item>
@@ -63,6 +70,14 @@
         <item>Wheel Bearings</item>
         <item>Car Wash</item>
     </string-array>
+
+
+    <string name="app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="mrec_id">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="interstitial_id_2">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="app_open">ca-app-pub-3940256099942544/9257395921</string>
 
 
     <string name="Email_api">mlsn.c026a8fd0429e201de04dc01406590239042cfa57c69387b35ca4686bc5d9f8e</string>

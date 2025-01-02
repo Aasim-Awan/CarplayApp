@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>banner_ad</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>interstitial_ad</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>native_ad</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>app_open_ad</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>reward_interstitial_ad</key>
+    <value>false</value>
+  </entry>
+  <entry>
+    <key>reward_ad</key>
+    <value>false</value>
+  </entry>
+</defaults>

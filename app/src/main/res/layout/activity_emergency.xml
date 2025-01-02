@@ -16,9 +16,9 @@
 
         <ImageView
             android:id="@+id/backArrow"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginStart="12dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="12dp"
             android:src="@drawable/ic_backarrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,12 +28,11 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins_medium"
             android:text="Emergency Crash Detection"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/backArrow"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -208,14 +207,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/primary"
-                    android:text="Start Tracing" />
+                    android:text="Start TracKing" />
 
                 <Button
                     android:id="@+id/btnStopService"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/primary"
-                    android:text="Stop Tracing"
+                    android:text="Stop TracKing"
                     android:visibility="gone" />
             </LinearLayout>
 

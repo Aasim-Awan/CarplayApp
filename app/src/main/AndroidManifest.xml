@@ -92,6 +92,10 @@
             android:exported="true"
             android:launchMode="singleTask" />
         <activity
+            android:name=".utils.OpenAdsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:launchMode="singleTask">
@@ -112,26 +116,14 @@
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.google.android.gms.cast.framework.options.DefaultOptionsProvider" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id" />
+
+
         <service
-            android:name=".speedtracker.SpeedTrackerService"
+            android:name=".service.CarPlayService"
             android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="location"
-            tools:ignore="ForegroundServicePermission" />
-        <service
-            android:name=".emergency.CrashDetectionService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name=".cast.ScreenCaptureService"
-            android:exported="true"
-            android:permission="android.permission.FOREGROUND_SERVICE">
-            <intent-filter>
-                <action android:name="com.example.carplaytesty.START_SCREEN_CAPTURE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name=".sevice.CarPlayService"
             android:exported="false" />
 
     </application>

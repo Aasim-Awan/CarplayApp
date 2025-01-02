@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.google.android.ads.nativetemplates.test.nativetemplates-mergeDebugAndroidTestResources-11:/values-v24/values-v24.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\hp\\.gradle\\caches\\transforms-4\\13d6ee89108d8871b864e6df63008731\\transformed\\appcompat-1.2.0\\res\\values-v24\\values-v24.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,212",
+                        "endColumns": "156,134",
+                        "endOffsets": "207,342"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -11,7 +11,7 @@ interface LocationLogDao {
     suspend fun insertLocationLog(locationLog: LocationLog)
 
     @Query("SELECT * FROM `Location Log` WHERE trackLocationId = :locationId ORDER BY timestamp DESC")
-    suspend fun getLocationLogsByLocationId(locationId: Int): List<LocationLog>
+    suspend fun getLocationLogsByLocationId(locationId: Long): List<LocationLog>
 
     @Query("SELECT * FROM `Location Log` ORDER BY timestamp DESC")
     suspend fun getAllLocationsLogs(): List<LocationLog>

@@ -49,10 +49,9 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
             android:layout_width="0dp"
-            android:layout_height="300dp"
-            android:layout_margin="12dp"
+            android:layout_height="400dp"
+            android:layout_margin="8dp"
             android:background="@drawable/border"
-            app:layout_constraintBottom_toTopOf="@id/Btns"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -62,17 +61,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/locationRecyclerView"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toBottomOf="@id/mapView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mapView">
+            app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/mapView">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/trackLocationButton"
@@ -111,7 +109,8 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/primary"
                     android:text="Show All Locations"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -121,8 +120,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="No location history found."
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/locationRecyclerView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Btns" />
@@ -132,9 +130,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/Btns"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Btns" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

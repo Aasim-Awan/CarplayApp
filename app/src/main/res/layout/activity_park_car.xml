@@ -60,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="Park car"
+            android:backgroundTint="@color/primary"
             app:layout_constraintTop_toBottomOf="@id/mapView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

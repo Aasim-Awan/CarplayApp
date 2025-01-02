@@ -4,17 +4,23 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.carplaytest.R
 import com.example.carplaytest.carmaintenance.database.CarMaintenanceViewModel
 import com.example.carplaytest.databinding.ActivityCarMaintenanceBinding
 import com.example.carplaytest.databinding.ServiceDetailsSheetBinding
+import com.example.carplaytest.notifications.NotificationWorker
 import com.example.carplaytest.notifications.TaskNotificationWorker
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.text.SimpleDateFormat
@@ -118,6 +124,11 @@ class CarMaintenanceActivity : AppCompatActivity() {
             }
             adapter2.submitList(sortedMaintenances)
             checkForUpcomingMaintenance(maintenance)
+            if (sortedMaintenances.isEmpty()) {
+                binding.noServices.visibility = View.VISIBLE
+            } else {
+                binding.noServices.visibility = View.GONE
+            }
         }
 
         binding.backArrow.setOnClickListener {
@@ -157,6 +168,28 @@ class CarMaintenanceActivity : AppCompatActivity() {
         } else {
             Log.d("MaintenanceCheck", "No Upcoming Maintenance Found")
         }
+    }
+
+    private fun scheduleNotificationWorker() {
+
+        val workRequest = PeriodicWorkRequest.Builder(
+            NotificationWorker::class.java,
+            1, TimeUnit.DAYS
+        )
+            .setConstraints(
+                Constraints.Builder().setRequiredNetworkType(NetworkType.NOT_REQUIRED).build()
+            )
+            .setInitialDelay(1 , TimeUnit.DAYS)
+            .addTag("app_open_notification")
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "app_open_notification",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest
+        )
+
+        Log.d("Notification", "Notification worker scheduled for 20 minutes later.")
     }
 
     private fun scheduleNotificationsForUpcomingMaintenance(maintenances: List<CarMaintenance1>) {
